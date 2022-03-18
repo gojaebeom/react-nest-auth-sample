@@ -21,8 +21,10 @@ export default class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async getCurrentUser() {
-    const user: User = await this.userRepository.findOne({ where: { id: 2 } });
+  async getCurrentUser(uid: number) {
+    const user: User = await this.userRepository.findOne({
+      where: { id: uid },
+    });
     if (!user)
       throw new NotFoundException(
         '로그인 한 유저의 데이터가 보이지 않아요. 어찌된 일이죠..? 😨',
@@ -63,8 +65,8 @@ export default class UserService {
     );
     if (!isMatchedPassword) throw new UnauthorizedException(message);
 
-    const actExp = Date.now() + 30 * 1000; // 30s
-    const rftExp = Date.now() + 60 * 60 * 1000; // 1s
+    const actExp = Math.floor(Date.now() / 1000) + 30;
+    const rftExp = Math.floor(Date.now() / 1000) + 60 * 60;
 
     const actPayload: Payload = {
       uid: user.id,
@@ -78,6 +80,6 @@ export default class UserService {
     };
     const act = jwt.sign(actPayload, process.env.JWT_SECRET);
     const rft = jwt.sign(rftPayload, process.env.JWT_SECRET);
-    return { act, rft };
+    return { act, actExp, rft };
   }
 }

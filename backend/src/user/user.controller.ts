@@ -1,4 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
+import { JwtValidationGuard } from 'src/common/guards/jwt.guard';
+import { JwtRequest } from 'src/common/interfaces/request';
 import SignInRequest from './dto/signin.request';
 import SignUpRequest from './dto/signup.request';
 import UserService from './user.service';
@@ -7,8 +10,10 @@ import UserService from './user.service';
 export default class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('/me')
-  getCurrentUser() {
-    return this.userService.getCurrentUser();
+  @UseGuards(JwtValidationGuard)
+  getCurrentUser(@Req() req: JwtRequest) {
+    const uid = req.uid;
+    return this.userService.getCurrentUser(uid);
   }
 
   @Post()
