@@ -1,7 +1,13 @@
-import { ConflictException, HttpException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import MyProfileResponse from './dto/myprofile.response';
 import SignUpRequest from './dto/signup.request';
 import User from './entities/user.entity';
 
@@ -11,8 +17,15 @@ export default class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  getCurrentUser() {
-    return 'get my profile data';
+  async getCurrentUser() {
+    const user: User = await this.userRepository.findOne({ where: { id: 2 } });
+    if (!user) {
+      throw new NotFoundException(
+        '로그인 한 유저의 데이터가 보이지 않아요. 어찌된 일이죠..? 😨',
+      );
+    }
+
+    return new MyProfileResponse(user);
   }
 
   async signUp(body: SignUpRequest) {
