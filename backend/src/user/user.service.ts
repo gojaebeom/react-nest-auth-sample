@@ -2,6 +2,7 @@ import { ConflictException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import SignUpRequest from './dto/signup.request';
 import User from './entities/user.entity';
 
 @Injectable()
@@ -14,8 +15,7 @@ export default class UserService {
     return 'get my profile data';
   }
 
-  async signUp(body: any) {
-    console.debug(body);
+  async signUp(body: SignUpRequest) {
     const findUser = await this.userRepository.findOne({
       where: { email: body.email },
     });
@@ -31,6 +31,6 @@ export default class UserService {
     user.name = body.name;
     user.password = hashPassword;
 
-    this.userRepository.save(user);
+    return this.userRepository.save(user);
   }
 }
