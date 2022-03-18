@@ -11,17 +11,17 @@ export default class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
-  @Column()
+  @Column({ default: '', nullable: true })
   nickname: string;
 
-  @Column()
-  passworld: string;
+  @Column({ nullable: false })
+  password: string;
 
   @CreateDateColumn()
   createdAt: Date;

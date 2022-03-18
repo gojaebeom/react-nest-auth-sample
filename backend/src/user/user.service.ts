@@ -23,5 +23,14 @@ export default class UserService {
     if (findUser) {
       throw new ConflictException('이미 존재하는 이메일 입니다. 😩');
     }
+    const saltRounds = 10;
+    const hashPassword = await bcrypt.hash(body.password, saltRounds);
+
+    const user = new User();
+    user.email = body.email;
+    user.name = body.name;
+    user.password = hashPassword;
+
+    this.userRepository.save(user);
   }
 }
