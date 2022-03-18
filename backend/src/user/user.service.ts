@@ -14,9 +14,9 @@ export default class UserService {
     return 'get my profile data';
   }
 
-  signUp(body: any) {
+  async signUp(body: any) {
     console.debug(body);
-    const findUser = this.userRepository.findOne({
+    const findUser = await this.userRepository.findOne({
       where: { email: body.email },
     });
     console.debug(findUser);

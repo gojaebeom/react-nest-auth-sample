@@ -10,8 +10,8 @@ export default class UserController {
   }
 
   @Post()
-  signUp(@Body() body) {
+  async signUp(@Body() body) {
 
-    return this.userService.signUp(body);
+    return await this.userService.signUp(body);
   }
 }
