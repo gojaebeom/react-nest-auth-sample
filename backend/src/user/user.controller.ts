@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { JwtValidationGuard } from 'src/common/guards/jwt.guard';
 import { JwtRequest } from 'src/common/interfaces/request';
@@ -24,5 +32,20 @@ export default class UserController {
   @Post('/login')
   async signIn(@Body() body: SignInRequest) {
     return await this.userService.signIn(body);
+  }
+
+  @Delete('/me')
+  @UseGuards(JwtValidationGuard)
+  async deleteUser(@Req() req: JwtRequest) {
+    const uid = req.uid;
+    await this.userService.deleteUser(uid);
+    return 'goodbye bro.. 😭';
+  }
+
+  @Get('/refresh')
+  @UseGuards(JwtValidationGuard)
+  refreshJwtToken(@Req() req: JwtRequest) {
+    const uid = req.uid;
+    return this.userService.getTokens(uid);
   }
 }

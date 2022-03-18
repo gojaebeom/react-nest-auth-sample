@@ -24,7 +24,14 @@ export class JwtValidationGuard implements CanActivate {
     try {
       const decodeToken: any = jwt.verify(token, process.env.JWT_SECRET);
       console.debug(decodeToken);
-
+      if (decodeToken.sub !== 'act') {
+        if (decodeToken.sub === 'rft' && request.url === '/users/refresh') {
+          const uid = decodeToken.uid;
+          request.uid = uid;
+          return true;
+        }
+        throw new UnauthorizedException('비정상적인 토큰이에요. ☹️');
+      }
       if (!decodeToken.uid) {
         throw new UnauthorizedException('비정상적인 토큰이에요. ☹️');
       }

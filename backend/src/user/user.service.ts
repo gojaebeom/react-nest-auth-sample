@@ -52,6 +52,25 @@ export default class UserService {
     return this.userRepository.save(user);
   }
 
+  getTokens(uid: number) {
+    const actExp = Math.floor(Date.now() / 1000) + 30;
+    const rftExp = Math.floor(Date.now() / 1000) + 60 * 60;
+
+    const actPayload: Payload = {
+      uid: uid,
+      exp: actExp,
+      sub: 'act',
+    };
+    const rftPayload: Payload = {
+      uid: uid,
+      exp: rftExp,
+      sub: 'rft',
+    };
+    const act = jwt.sign(actPayload, process.env.JWT_SECRET);
+    const rft = jwt.sign(rftPayload, process.env.JWT_SECRET);
+    return { act, actExp, rft };
+  }
+
   async signIn(body: signinRequest) {
     const user: User = await this.userRepository.findOne({
       where: { email: body.email },
@@ -64,22 +83,11 @@ export default class UserService {
       user.password,
     );
     if (!isMatchedPassword) throw new UnauthorizedException(message);
+    const uid = user.id;
+    return this.getTokens(uid);
+  }
 
-    const actExp = Math.floor(Date.now() / 1000) + 30;
-    const rftExp = Math.floor(Date.now() / 1000) + 60 * 60;
-
-    const actPayload: Payload = {
-      uid: user.id,
-      exp: actExp,
-      sub: 'act',
-    };
-    const rftPayload: Payload = {
-      uid: user.id,
-      exp: rftExp,
-      sub: 'rft',
-    };
-    const act = jwt.sign(actPayload, process.env.JWT_SECRET);
-    const rft = jwt.sign(rftPayload, process.env.JWT_SECRET);
-    return { act, actExp, rft };
+  async deleteUser(uid: number) {
+    return await this.userRepository.delete(uid);
   }
 }
