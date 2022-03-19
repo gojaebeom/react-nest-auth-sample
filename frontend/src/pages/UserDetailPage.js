@@ -1,3 +1,10 @@
+import { Header } from "containers";
+
 export default function UserDetailPage() {
-  return "회원 상세 페이지";
+  return (
+    <div>
+      <Header />
+      <h2>홈</h2>
+    </div>
+  );
 }

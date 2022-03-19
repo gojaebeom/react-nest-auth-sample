@@ -1,5 +1,5 @@
 import { useRoutes } from "react-router-dom";
-import { SignInPage, SignUpPage, UserDetailPage } from "./pages";
+import { SignInPage, SignUpPage, UserDetailPage } from "pages";
 
 export default function App() {
   const routes = useRoutes([
