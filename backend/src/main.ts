@@ -6,6 +6,10 @@ import { TimmerInterceptor } from './common/interceptors/timmer.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TimmerInterceptor());
   app.useGlobalPipes(new ValidationPipe());
