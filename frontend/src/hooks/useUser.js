@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { atom, useRecoilState } from "recoil";
-import { customAxios } from "utils/axios";
+import { customAxios, customAxiosWithoutRI } from "utils/axios";
 
 const credentialsUserState = atom({
   key: "credentialsUserState",
@@ -21,6 +21,7 @@ export const useAuthEffect = () => {
     }).catch(() => {
       setCredentialsUser(null);
       setIsCompleted(true);
+      throw new Error("유저 데이터 없음.");
     });
 
     setCredentialsUser(data);
@@ -47,7 +48,7 @@ export default function useUser() {
   };
 
   const signUp = async (form) => {
-    const res = await customAxios({
+    const res = await customAxiosWithoutRI({
       method: "post",
       url: "/users",
       data: form,
@@ -58,7 +59,7 @@ export default function useUser() {
   };
 
   const signIn = async (form) => {
-    const { data } = await customAxios({
+    const { data } = await customAxiosWithoutRI({
       method: "post",
       url: "/users/login",
       data: form,
