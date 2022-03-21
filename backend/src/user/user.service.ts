@@ -54,7 +54,7 @@ export default class UserService {
 
   getTokens(uid: number) {
     const actExp = Math.floor(Date.now() / 1000) + 30;
-    const rftExp = Math.floor(Date.now() / 1000) + 60 * 60;
+    const rftExp = Math.floor(Date.now() / 1000) + 60 * 5;
 
     const actPayload: Payload = {
       uid: uid,
